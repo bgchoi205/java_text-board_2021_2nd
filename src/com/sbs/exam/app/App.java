@@ -6,6 +6,7 @@ import java.util.Scanner;
 
 import com.sbs.exam.app.dto.Article;
 import com.sbs.exam.util.Util;
+import com.sbs.exam.app.repository.ArticleRepository;
 
 public class App {
 	public static void run() {
@@ -75,15 +76,8 @@ public class App {
 					continue;
 				}
 
-				Article foundArticle = null;
-
-				for (Article article : articles) {
-					if (article.id == id) {
-						foundArticle = article;
-						break;
-					}
-				}
-
+				Article foundArticle = ArticleRepository.getArticleById(id, articles);
+				
 				if (foundArticle == null) {
 					System.out.printf("%d번 게시물은 존재하지 않습니다.\n", id);
 					continue;
@@ -103,14 +97,7 @@ public class App {
 					continue;
 				}
 
-				Article foundArticle = null;
-
-				for (Article article : articles) {
-					if (article.id == id) {
-						foundArticle = article;
-						break;
-					}
-				}
+				Article foundArticle = ArticleRepository.getArticleById(id, articles);
 
 				if (foundArticle == null) {
 					System.out.printf("%d번 게시물은 존재하지 않습니다.\n", id);
@@ -120,6 +107,32 @@ public class App {
 				articles.remove(foundArticle);
 
 				System.out.printf("%d번 게시물을 삭제하였습니다.\n", id);
+
+			}else if (rq.getActionPath().equals("/usr/article/modify")) {
+				int id = rq.getIntParam("id", 0);
+
+				if (id == 0) {
+					System.out.println("id를 입력해주세요.");
+					continue;
+				}
+
+				Article foundArticle = ArticleRepository.getArticleById(id, articles);
+
+				if (foundArticle == null) {
+					System.out.printf("%d번 게시물은 존재하지 않습니다.\n", id);
+					continue;
+				}
+
+				System.out.printf("새 제목 입력 : ");
+				String title = sc.nextLine().trim();
+				System.out.printf("새 내용 입력 : ");
+				String body = sc.nextLine().trim();
+				
+				foundArticle.title = title;
+				foundArticle.body = body;
+				foundArticle.updateDate = Util.getNowDateStr();
+				
+				System.out.println(foundArticle.id + "번 게시물 수정 완료");
 
 			} else if (rq.getActionPath().equals("/usr/system/exit")) {
 				System.out.println("프로그램을 종료 합니다.");
