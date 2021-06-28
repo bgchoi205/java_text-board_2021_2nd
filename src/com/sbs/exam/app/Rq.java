@@ -62,4 +62,13 @@ public class Rq {
 		}
 	}
 
+	public String getControllerTypeName() {
+		
+		return controllerTypeName;
+	}
+
+	public Object getControllerName() {
+		return controllerName;
+	}
+
 }
